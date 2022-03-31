@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1054629956314",
+    "firebase_url": "https://scwb-ec17e-default-rtdb.firebaseio.com",
+    "project_id": "scwb-ec17e",
+    "storage_bucket": "scwb-ec17e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054629956314:android:47047b538239f18858b3e3",
+        "android_client_info": {
+          "package_name": "com.example.sw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1054629956314-jvo5jgf13jl0eomdks5dd5ahvbntmpsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAljgBL29WQ7LvedGfOGm6HXAxfEovPwos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1054629956314-jvo5jgf13jl0eomdks5dd5ahvbntmpsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
