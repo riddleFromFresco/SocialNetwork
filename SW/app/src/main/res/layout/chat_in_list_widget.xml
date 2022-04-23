@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="412dp"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@android:mipmap/sym_def_app_icon" />
+
+        <TextView
+            android:id="@+id/chatUsernameTextView"
+            android:layout_width="331dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/profileImageView"
+            android:text="Username"
+            android:textAlignment="viewStart"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -2,4 +2,9 @@
     <string name="app_name">SW</string>
     <string name="send_button_name">Отправить</string>
     <string name="edit_text_hint">Введите сообщение</string>
+    <string name="sign_in_text">Sign In</string>
+    <string name="sign_up_text">Sign Up</string>
+    <string name="logo_text">SocialNetwork</string>
+    <string name="password_placeholder">password</string>
+    <string name="email_placeholder">email</string>
 </resources>
