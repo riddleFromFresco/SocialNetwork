@@ -14,30 +14,34 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sw.R;
 import com.example.sw.account_operations.MessageViewer;
 import com.example.sw.application.SocialNetworkApplication;
-import com.example.sw.model.data_models.MessageData;
-import com.example.sw.model.database_interfaces.ChatsDatabaseInterface;
-import com.example.sw.model.test_data.TestChatsData;
+import com.example.sw.model.firebase_connectors.ChatsFirebase;
 
 import java.util.ArrayList;
 
 public class Chat extends AppCompatActivity {
     MessageViewer messageViewer;
     ListView messagesListView;
+    ArrayList<MessageInListModel> messagesView;
     MessagesAdapter messagesAdapter;
     RelativeLayout interlocutorLayout;
     EditText messageInput;
     Button sendMessageBtn;
     View interlocutorProfileView;
 
-    ChatsDatabaseInterface testChatsData;
-    
     String currentUsername;
     String interlocutorName;
+
+    ChatsFirebase chatsFirebase;
+
 
     void setFieldsValues() {
         setViewFields();
         setObjectFields();
         setCurrentUsername();
+        setInterlocutorName();
+        setMessagesListView();
+
+        this.setTitle(currentUsername);
     }
 
     void setViewFields() {
@@ -52,37 +56,39 @@ public class Chat extends AppCompatActivity {
 
     void setObjectFields() {
         messageViewer = new MessageViewer();
-        testChatsData = new TestChatsData();
-    }
-
-    void setMessagesListView(ArrayList<MessageInListModel> messagesView) {
-        messagesAdapter = new MessagesAdapter(this, messagesView, currentUsername);
-        messagesListView.setAdapter(messagesAdapter);
+        chatsFirebase = new ChatsFirebase();
     }
 
     void setCurrentUsername() {
         currentUsername = ((SocialNetworkApplication) this.getApplication()).getCurrentUsername();
     }
 
-    ArrayList<MessageInListModel> getMessagesView() {
-        Bundle messagesBundle = getIntent().getBundleExtra("messages");
+    void setInterlocutorName() {
+        String interlocutorName = getIntent().getStringExtra("interlocutor");
+        this.interlocutorName = interlocutorName;
+    }
 
-        int messagesNum = messagesBundle.size();
-        ArrayList<MessageInListModel> messagesView = new ArrayList<MessageInListModel>();
-
-        for (int i = 0; i < messagesNum; i++) {
-            MessageData message = (MessageData) messagesBundle.get(String.valueOf(i));
-            messagesView.add(new MessageInListModel(message.getMessageText(), message.getSenderUsername()));
-        }
-
-        return messagesView;
+    void setMessagesListView() {
+        messagesView = new ArrayList<MessageInListModel>();
+        messagesAdapter = new MessagesAdapter(this, messagesView, currentUsername);
+        messagesListView.setAdapter(messagesAdapter);
     }
 
     void setInterlocutorProfileView(String interlocutorName) {
         TextView textViewUsername = (TextView) interlocutorProfileView.findViewById(R.id.chatUsernameTextView);
-        System.out.println(interlocutorName);
         textViewUsername.setText(interlocutorName);
         interlocutorLayout.addView(interlocutorProfileView);
+    }
+
+    void sendMessageBtnStartListener() {
+        sendMessageBtn.setOnClickListener(view -> {
+            String messageText = messageInput.getText().toString();
+
+            if (isMessageValid(messageText)) {
+                chatsFirebase.sendMessage(currentUsername, interlocutorName, messageText);
+                clearMessageField();
+            }
+        });
     }
 
     boolean isMessageValid(String messageText) {
@@ -97,27 +103,8 @@ public class Chat extends AppCompatActivity {
         return true;
     }
 
-    String getInterlocutorName() {
-        String interlocutorName = getIntent().getStringExtra("interlocutor");
-        return interlocutorName;
-    }
-
     void clearMessageField() {
         messageInput.setText("");
-    }
-
-    void sendMessageBtnStartListener() {
-        sendMessageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String messageText = messageInput.getText().toString();
-
-                if (isMessageValid(messageText)) {
-                    testChatsData.sendMessage(currentUsername, interlocutorName, messageText);
-                    clearMessageField();
-                }
-            }
-        });
     }
 
     @Override
@@ -128,16 +115,10 @@ public class Chat extends AppCompatActivity {
 
         setFieldsValues();
 
-        interlocutorName = getInterlocutorName();
-
-        ArrayList<MessageInListModel> messagesView = getMessagesView();
-        setMessagesListView(messagesView);
-
         setInterlocutorProfileView(interlocutorName);
 
         sendMessageBtnStartListener();
 
-        TestChatsData td = new TestChatsData();
-        td.startListener(messagesView, interlocutorName, messagesAdapter, messagesListView);
+        chatsFirebase.setMessagesOfUsers(currentUsername, interlocutorName, messagesAdapter, messagesView);
     }
 }

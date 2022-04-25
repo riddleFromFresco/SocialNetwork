@@ -2,7 +2,6 @@ package com.example.sw.account_operations;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -11,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sw.R;
 import com.example.sw.application.SocialNetworkApplication;
 import com.example.sw.chat_list.ChatsListMenu;
-import com.example.sw.model.database_interfaces.AccountsInterface;
-import com.example.sw.model.test_data.TestAccountsData;
+import com.example.sw.model.firebase_connectors.AccountsFirebase;
+
 
 public class SignUpMenu extends AppCompatActivity {
     EditText emailField;
@@ -20,17 +19,9 @@ public class SignUpMenu extends AppCompatActivity {
     EditText repeatedPasswordField;
     Button signUpBtn;
 
-    Validators validators;
     MessageViewer messageViewer;
-    AccountsInterface testAccountsData;
+    AccountsFirebase firebaseAccountsData;
 
-    boolean doesAccountExists(String username) {
-        return testAccountsData.doesUserExist(username);
-    }
-
-    boolean createUser(String username, String password) {
-        return testAccountsData.createNewAccount(username, password);
-    }
 
     void setFieldsValues() {
         setViewFields();
@@ -45,18 +36,17 @@ public class SignUpMenu extends AppCompatActivity {
     }
 
     void setObjectFields() {
-        validators = new Validators();
         messageViewer = new MessageViewer();
-        testAccountsData = new TestAccountsData();
+        firebaseAccountsData = new AccountsFirebase();
     }
 
     boolean isAccountDataValid(String email, String password, String repeatedPassword) {
-        if (!validators.isValidEmail(email)) {
+        if (!Validators.isValidEmail(email)) {
             messageViewer.showMessage("Некорректный email", getApplicationContext());
             return false;
         }
 
-        if (!validators.isValidPassword(password) || !validators.isValidPassword(repeatedPassword))
+        if (!Validators.isValidPassword(password) || !Validators.isValidPassword(repeatedPassword))
         {
             messageViewer.showMessage("Некорректный пароль", getApplicationContext());
             return false;
@@ -67,29 +57,40 @@ public class SignUpMenu extends AppCompatActivity {
             return false;
         }
 
-        if (doesAccountExists(email)) {
-            messageViewer.showMessage("Пользователь с таким именем уже существует", getApplicationContext());
-            return false;
-        }
-
         return true;
     }
 
-    void openChatsMenu(String email, String password, String repeatedPassword) {
-        if (!isAccountDataValid(email, password, repeatedPassword))
-            return;
+    public void accountAlreadyExistsMessage() {
+        messageViewer.showMessage("Пользователь с таким именем уже существует", getApplicationContext());
+    }
 
-        boolean hasUserBeenCreated = createUser(email, password);
-        if (!hasUserBeenCreated) {
-            messageViewer.showMessage("Не удалось создать аккаунт.", getApplicationContext());
-            return;
-        }
+    public void createUserWithValidation(String email, String password) {
+        createUser(email, password);
+        firebaseAccountsData.checkIfAccountAlreadyExist(email, password, this, AccountsFirebase.CHECK_IF_ACCOUNT_CREATED);
+    }
 
+    void createUser(String username, String password) {
+        firebaseAccountsData.createNewAccount(username, password);
+    }
+
+    public void openChatsMenu(String email) {
         SocialNetworkApplication application = (SocialNetworkApplication) this.getApplication();
         application.setCurrentUsername(email);
 
         startActivity(new Intent(SignUpMenu.this, ChatsListMenu.class));
     }
+
+    public void unableToCreateAccountMessage() {
+        messageViewer.showMessage("Не удалось создать аккаунт.", getApplicationContext());
+    }
+
+    void signUpBtnPressed(String email, String password, String repeatedPassword) {
+        if (!isAccountDataValid(email, password, repeatedPassword))
+            return;
+
+        firebaseAccountsData.checkIfAccountAlreadyExist(email, password, this, AccountsFirebase.CHECK_IF_USERNAME_ALREADY_IN_USE);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,15 +99,12 @@ public class SignUpMenu extends AppCompatActivity {
 
         setFieldsValues();
 
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = emailField.getText().toString();
-                String password = passwordField.getText().toString();
-                String repeatedPassword = repeatedPasswordField.getText().toString();
+        signUpBtn.setOnClickListener(view -> {
+            String email = emailField.getText().toString();
+            String password = passwordField.getText().toString();
+            String repeatedPassword = repeatedPasswordField.getText().toString();
 
-                openChatsMenu(email, password, repeatedPassword);
-            }
+            signUpBtnPressed(email, password, repeatedPassword);
         });
     }
 }

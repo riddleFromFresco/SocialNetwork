@@ -19,12 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-            android:parentActivityName=".account_operations.LoginMenu">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".account_operations.LoginMenu" />
-        </activity>
         <activity android:name=".account_operations.SignUpMenu"
             android:parentActivityName=".account_operations.LoginMenu">
             <meta-data

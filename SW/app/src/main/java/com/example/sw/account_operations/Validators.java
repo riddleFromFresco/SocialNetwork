@@ -6,6 +6,7 @@ import android.util.Patterns;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class Validators {
     public static boolean isValidEmail(CharSequence email) {
         return (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches());

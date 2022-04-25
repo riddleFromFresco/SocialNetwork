@@ -19,6 +19,7 @@ public class MessagesAdapter extends BaseAdapter {
     LayoutInflater inflater = null;
     String currentUsername;
 
+
     public MessagesAdapter(Activity context, ArrayList<MessageInListModel> chatList, String currentUsername) {
         this.messagesList = chatList;
         this.currentUsername = currentUsername;

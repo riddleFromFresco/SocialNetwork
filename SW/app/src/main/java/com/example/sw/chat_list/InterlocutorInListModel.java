@@ -15,4 +15,9 @@ public class InterlocutorInListModel {
         return userName;
     }
 
+    @Override
+    public boolean equals(Object interlocutorModel) {
+        return (((InterlocutorInListModel)interlocutorModel).userName.equals(this.userName));
+    }
+
 }

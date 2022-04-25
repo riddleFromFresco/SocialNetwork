@@ -3,10 +3,12 @@ package com.example.sw.chat;
 public class MessageInListModel {
     private String text;
     private String sender;
+    private long time;
 
-    public MessageInListModel(String text, String sender) {
+    public MessageInListModel(String text, String sender, String time) {
         this.text = text;
         this.sender = sender;
+        this.time = Long.valueOf(time);
     }
 
     public void setText(String text) {
@@ -23,5 +25,13 @@ public class MessageInListModel {
 
     public String getSender() {
         return sender;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public long getTime() {
+        return time;
     }
 }

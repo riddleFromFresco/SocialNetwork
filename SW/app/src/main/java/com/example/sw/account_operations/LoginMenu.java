@@ -2,7 +2,6 @@ package com.example.sw.account_operations;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -11,15 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sw.R;
 import com.example.sw.application.SocialNetworkApplication;
 import com.example.sw.chat_list.ChatsListMenu;
-import com.example.sw.model.database_interfaces.AccountsInterface;
-import com.example.sw.model.test_data.TestAccountsData;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.sw.model.firebase_connectors.AccountsFirebase;
+
 
 public class LoginMenu extends AppCompatActivity {
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("messages");
-
     EditText emailField;
     EditText passwordField;
     Button signInBtn;
@@ -28,58 +22,8 @@ public class LoginMenu extends AppCompatActivity {
     Validators validators;
     MessageViewer messageViewer;
 
-    AccountsInterface testAccountsData;
+    AccountsFirebase accountsFirebase;
 
-
-    boolean isEnteredDataValid(String email, String password) {
-        if (!validators.isValidEmail(email)) {
-            messageViewer.showMessage("Некорректный email", getApplicationContext());
-            return false;
-        }
-        if (!validators.isValidPassword(password))
-        {
-            messageViewer.showMessage("Некорректный пароль", getApplicationContext());
-            return false;
-        }
-
-        return true;
-    }
-
-    boolean doesAccountExist(String email, String password) {
-        testAccountsData = new TestAccountsData();
-
-        String truePassword = testAccountsData.getPasswordOfUser(email);
-        if (!testAccountsData.doesUserExist(email)) {
-            messageViewer.showMessage("Пользователя не существует.", getApplicationContext());
-            return false;
-        }
-
-        if (!password.equals(truePassword)) {
-            messageViewer.showMessage("Пароль неверный.", getApplicationContext());
-            return false;
-        }
-
-        return true;
-    }
-
-    void openChatsMenu() {
-        String email = emailField.getText().toString();
-        String password = passwordField.getText().toString();
-
-        SocialNetworkApplication application = ((SocialNetworkApplication) this.getApplication());
-        application.setCurrentUsername(email);
-
-        if (!isEnteredDataValid(email, password))
-            return;
-        if (!doesAccountExist(email, password))
-            return;
-
-        startActivity(new Intent(LoginMenu.this, ChatsListMenu.class));
-    }
-
-    void openSignUpPage() {
-        startActivity(new Intent(LoginMenu.this, SignUpMenu.class));
-    }
 
     void setFieldsValues() {
         setViewFields();
@@ -96,6 +40,48 @@ public class LoginMenu extends AppCompatActivity {
     void setObjectFields() {
         messageViewer = new MessageViewer();
         validators = new Validators();
+        accountsFirebase = new AccountsFirebase();
+    }
+
+    void signInBtnClicked() {
+        String email = emailField.getText().toString();
+        String password = passwordField.getText().toString();
+        if (!isEnteredDataValid(email, password))
+            return;
+
+        accountsFirebase.getPasswordOfUser(email, password, this);
+    }
+
+    void openSignUpPage() {
+        startActivity(new Intent(LoginMenu.this, SignUpMenu.class));
+    }
+
+    boolean isEnteredDataValid(String email, String password) {
+        if (!validators.isValidEmail(email)) {
+            messageViewer.showMessage("Некорректный email", getApplicationContext());
+            return false;
+        }
+        if (!validators.isValidPassword(password)) {
+            messageViewer.showMessage("Некорректный пароль", getApplicationContext());
+            return false;
+        }
+
+        return true;
+    }
+
+    public void unableToLogin() {
+        messageViewer.showMessage("Пользователя не существует.", getApplicationContext());
+    }
+
+    public void openChatsMenu(String username, String enteredPassword, String realPassword) {
+        SocialNetworkApplication application = ((SocialNetworkApplication) this.getApplication());
+        application.setCurrentUsername(username);
+
+        startActivity(new Intent(LoginMenu.this, ChatsListMenu.class));
+    }
+
+    public void wrongPassword() {
+        messageViewer.showMessage("Неверный пароль.", this);
     }
 
     @Override
@@ -105,19 +91,7 @@ public class LoginMenu extends AppCompatActivity {
 
         setFieldsValues();
 
-        signInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openChatsMenu();
-            }
-        });
-
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openSignUpPage();
-            }
-        });
-
+        signInBtn.setOnClickListener(view -> signInBtnClicked());
+        signUpBtn.setOnClickListener(view -> openSignUpPage());
     }
 }
