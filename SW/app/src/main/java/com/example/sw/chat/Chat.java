@@ -12,9 +12,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sw.R;
-import com.example.sw.account_operations.MessageViewer;
+import com.example.sw.system_messages.MessageViewer;
 import com.example.sw.application.SocialNetworkApplication;
 import com.example.sw.model.firebase_connectors.ChatsFirebase;
+import com.example.sw.system_messages.SystemMessages;
 
 import java.util.ArrayList;
 
@@ -93,11 +94,11 @@ public class Chat extends AppCompatActivity {
 
     boolean isMessageValid(String messageText) {
         if (messageText.equals("")) {
-            messageViewer.showMessage("Введите сообщение!", getApplicationContext());
+            messageViewer.showMessage(SystemMessages.EMPTY_MESSAGE_TEXT, getApplicationContext());
             return false;
         }
         if (messageText.length() > 50) {
-            messageViewer.showMessage("Введите более короткое сообщение!", getApplicationContext());
+            messageViewer.showMessage(SystemMessages.TOO_LONG_MESSAGE_TEXT, getApplicationContext());
             return false;
         }
         return true;

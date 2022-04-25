@@ -9,7 +9,7 @@ import android.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sw.R;
-import com.example.sw.account_operations.MessageViewer;
+import com.example.sw.system_messages.MessageViewer;
 import com.example.sw.application.SocialNetworkApplication;
 import com.example.sw.chat.Chat;
 import com.example.sw.model.firebase_connectors.ChatsFirebase;

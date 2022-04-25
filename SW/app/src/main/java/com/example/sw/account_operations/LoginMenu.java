@@ -11,6 +11,8 @@ import com.example.sw.R;
 import com.example.sw.application.SocialNetworkApplication;
 import com.example.sw.chat_list.ChatsListMenu;
 import com.example.sw.model.firebase_connectors.AccountsFirebase;
+import com.example.sw.system_messages.MessageViewer;
+import com.example.sw.system_messages.SystemMessages;
 
 
 public class LoginMenu extends AppCompatActivity {
@@ -58,11 +60,11 @@ public class LoginMenu extends AppCompatActivity {
 
     boolean isEnteredDataValid(String email, String password) {
         if (!validators.isValidEmail(email)) {
-            messageViewer.showMessage("Некорректный email", getApplicationContext());
+            messageViewer.showMessage(SystemMessages.INCORRECT_EMAIL, getApplicationContext());
             return false;
         }
         if (!validators.isValidPassword(password)) {
-            messageViewer.showMessage("Некорректный пароль", getApplicationContext());
+            messageViewer.showMessage(SystemMessages.INCORRECT_PASSWORD, getApplicationContext());
             return false;
         }
 
@@ -70,7 +72,7 @@ public class LoginMenu extends AppCompatActivity {
     }
 
     public void unableToLogin() {
-        messageViewer.showMessage("Пользователя не существует.", getApplicationContext());
+        messageViewer.showMessage(SystemMessages.USER_DOES_NOT_EXIST, getApplicationContext());
     }
 
     public void openChatsMenu(String username, String enteredPassword, String realPassword) {
@@ -81,7 +83,7 @@ public class LoginMenu extends AppCompatActivity {
     }
 
     public void wrongPassword() {
-        messageViewer.showMessage("Неверный пароль.", this);
+        messageViewer.showMessage(SystemMessages.WRONG_PASSWORD, this);
     }
 
     @Override

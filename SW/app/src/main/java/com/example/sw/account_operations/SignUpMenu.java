@@ -11,6 +11,8 @@ import com.example.sw.R;
 import com.example.sw.application.SocialNetworkApplication;
 import com.example.sw.chat_list.ChatsListMenu;
 import com.example.sw.model.firebase_connectors.AccountsFirebase;
+import com.example.sw.system_messages.MessageViewer;
+import com.example.sw.system_messages.SystemMessages;
 
 
 public class SignUpMenu extends AppCompatActivity {
@@ -42,18 +44,18 @@ public class SignUpMenu extends AppCompatActivity {
 
     boolean isAccountDataValid(String email, String password, String repeatedPassword) {
         if (!Validators.isValidEmail(email)) {
-            messageViewer.showMessage("Некорректный email", getApplicationContext());
+            messageViewer.showMessage(SystemMessages.INCORRECT_EMAIL, getApplicationContext());
             return false;
         }
 
         if (!Validators.isValidPassword(password) || !Validators.isValidPassword(repeatedPassword))
         {
-            messageViewer.showMessage("Некорректный пароль", getApplicationContext());
+            messageViewer.showMessage(SystemMessages.INCORRECT_PASSWORD, getApplicationContext());
             return false;
         }
 
         if (!password.equals(repeatedPassword)) {
-            messageViewer.showMessage("Введенные пароли не совпадают", getApplicationContext());
+            messageViewer.showMessage(SystemMessages.MISMATCHED_PASSWORDS, getApplicationContext());
             return false;
         }
 
@@ -61,7 +63,7 @@ public class SignUpMenu extends AppCompatActivity {
     }
 
     public void accountAlreadyExistsMessage() {
-        messageViewer.showMessage("Пользователь с таким именем уже существует", getApplicationContext());
+        messageViewer.showMessage(SystemMessages.NICKNAME_IS_ALREADY_IN_USE, getApplicationContext());
     }
 
     public void createUserWithValidation(String email, String password) {
@@ -81,7 +83,7 @@ public class SignUpMenu extends AppCompatActivity {
     }
 
     public void unableToCreateAccountMessage() {
-        messageViewer.showMessage("Не удалось создать аккаунт.", getApplicationContext());
+        messageViewer.showMessage(SystemMessages.UNABLE_TO_CREATE_ACCOUNT, getApplicationContext());
     }
 
     void signUpBtnPressed(String email, String password, String repeatedPassword) {
