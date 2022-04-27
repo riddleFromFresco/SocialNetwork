@@ -8,14 +8,14 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="412dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <ImageView
             android:id="@+id/profileImageView"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@android:mipmap/sym_def_app_icon" />
+            android:src="@drawable/ic_baseline_account_circle_24" />
 
         <TextView
             android:id="@+id/chatUsernameTextView"
